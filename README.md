@@ -56,6 +56,12 @@ The hook shows a short summary after cleanup:
 Task Cleaner: Removed 3 task directories and 2 files (2.1 KiB).
 ```
 
+For an empty task directory, the message shows zero files and zero bytes:
+
+```text
+Task Cleaner: Removed 1 task directory and 0 files (0 B).
+```
+
 If cleanup cannot finish, the message gives the reason. Repeated reasons appear once. Command-line output stays in JSON format.
 
 ## Inspect and control cleanup

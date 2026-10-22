@@ -242,9 +242,8 @@ def hook(store, payload):
             size = sum(report["bytes"] for report in reports)
             noun = "directory" if directories == 1 else "directories"
             message = f"Removed {directories} task {noun}"
-            if files:
-                noun = "file" if files == 1 else "files"
-                message += f" and {files} {noun} ({format_size(size)})"
+            noun = "file" if files == 1 else "files"
+            message += f" and {files} {noun} ({format_size(size)})"
             messages.append(message + ".")
         if skipped:
             messages.append("Cleanup incomplete.")
