@@ -7,9 +7,11 @@ A local Codex plugin for macOS. It removes tracked temporary task files after co
 Use a Codex CLI version that supports `codex plugin`. Run these commands from any directory. Codex downloads the released plugin for you.
 
 ```sh
-codex plugin marketplace add senorMk/codex-task-cleaner --ref v0.1.0
+codex plugin marketplace add senorMk/codex-task-cleaner --ref v0.1.1
 codex plugin add task-cleaner@task-cleaner-local
 ```
+
+To update an existing installation, first run `codex plugin marketplace remove task-cleaner-local`, then run the install commands above.
 
 Start a new Codex chat. Open `/hooks` and review and trust the two Task Cleaner hooks. Codex requires this trust step before local plugin hooks can run. Do not bypass hook trust. Installation alone does not activate the hooks.
 
@@ -17,12 +19,12 @@ For a first check, ask Codex to create a disposable file in the supplied task di
 
 ### Install from a release ZIP
 
-Download `task-cleaner-v0.1.0.zip` and `SHA256SUMS` from the [v0.1.0 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.0). In the download directory, check and extract the package:
+Download `task-cleaner-v0.1.1.zip` and `SHA256SUMS` from the [v0.1.1 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.1). In the download directory, check and extract the package:
 
 ```sh
 shasum -a 256 -c SHA256SUMS
-unzip task-cleaner-v0.1.0.zip
-codex plugin marketplace add ./task-cleaner-v0.1.0
+unzip task-cleaner-v0.1.1.zip
+codex plugin marketplace add ./task-cleaner-v0.1.1
 codex plugin add task-cleaner@task-cleaner-local
 ```
 
@@ -48,7 +50,7 @@ All three methods use the `task-cleaner-local` marketplace. Choose one method. T
 
 Each directory is under `/private/tmp/codex-task-cleaner-UID/` on macOS. On macOS, `/tmp` points to `/private/tmp`. Directory names are hashes of the session and turn identifiers. Records contain no prompts or file contents. Small records remain after cleanup for inspection. There is no automatic record expiry in this version.
 
-From version 0.1.1, the hook shows a short summary after cleanup. Release 0.1.0 reports cleanup results as JSON.
+The hook shows a short summary after cleanup:
 
 ```text
 Task Cleaner: Removed 3 task directories and 2 files (2.1 KiB).
