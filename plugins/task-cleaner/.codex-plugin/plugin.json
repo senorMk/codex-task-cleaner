@@ -1,0 +1,7 @@
+{
+  "name": "task-cleaner",
+  "version": "0.1.0",
+  "description": "Remove tracked temporary task files after completed Codex work.",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}
