@@ -194,6 +194,15 @@ class Store:
         return report
 
 
+def format_size(size):
+    if size < 1024:
+        return f"{size} B"
+    for unit in ("KiB", "MiB", "GiB", "TiB", "PiB"):
+        size /= 1024
+        if size < 1024 or unit == "PiB":
+            return f"{size:.1f} {unit}"
+
+
 def hook(store, payload):
     event = payload.get("hook_event_name")
     if event == "UserPromptSubmit":
@@ -226,8 +235,22 @@ def hook(store, payload):
                 reports.append(store.clean(data["task"], apply=True))
             except (Refused, OSError) as error:
                 skipped.append(str(error))
-        if reports or skipped:
-            return {"systemMessage": "Task Cleaner: " + json.dumps({"removed": reports, "retained": skipped})}
+        messages = []
+        if reports:
+            directories = len(reports)
+            files = sum(report["files"] for report in reports)
+            size = sum(report["bytes"] for report in reports)
+            noun = "directory" if directories == 1 else "directories"
+            message = f"Removed {directories} task {noun}"
+            if files:
+                noun = "file" if files == 1 else "files"
+                message += f" and {files} {noun} ({format_size(size)})"
+            messages.append(message + ".")
+        if skipped:
+            messages.append("Cleanup incomplete.")
+            messages.extend(dict.fromkeys(skipped))
+        if messages:
+            return {"systemMessage": "Task Cleaner: " + " ".join(messages)}
     return {}
 
 
