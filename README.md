@@ -1,45 +1,25 @@
 # Task Cleaner
 
-A local Codex plugin for macOS. It removes tracked temporary task files after completed work. Python 3.9 or later and `lsof` are required. No Python packages, network service, API key, or scheduled job are needed.
+Task Cleaner removes tracked temporary files after Codex completes a task. It runs locally on macOS, with no Python packages or API keys required.
+
+Codex puts disposable files in a task directory and marks it ready after the work is complete. Task Cleaner then removes those files. Save final outputs outside the task directory. Files from unfinished tasks stay available.
 
 ## Install
 
-Use a Codex CLI version that supports `codex plugin`. Run these commands from any directory. Codex downloads the released plugin for you.
+Run these commands from any directory. Codex downloads the released plugin for you.
 
 ```sh
 codex plugin marketplace add senorMk/codex-task-cleaner --ref v0.1.1
 codex plugin add task-cleaner@task-cleaner-local
 ```
 
+Requires macOS, Python 3.9 or later, `lsof`, and a Codex CLI version that supports `codex plugin`. No network service or scheduled job is needed for cleanup.
+
 To update an existing installation, first run `codex plugin marketplace remove task-cleaner-local`, then run the install commands above.
 
 Start a new Codex chat. Open `/hooks` and review and trust the two Task Cleaner hooks. Codex requires this trust step before local plugin hooks can run. Do not bypass hook trust. Installation alone does not activate the hooks.
 
 For a first check, ask Codex to create a disposable file in the supplied task directory, complete the work, and mark the directory ready. After the turn, use the helper's `list` command to confirm a `removed` record.
-
-### Install from a release ZIP
-
-Download `task-cleaner-v0.1.1.zip` and `SHA256SUMS` from the [v0.1.1 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.1). In the download directory, check and extract the package:
-
-```sh
-shasum -a 256 -c SHA256SUMS
-unzip task-cleaner-v0.1.1.zip
-codex plugin marketplace add ./task-cleaner-v0.1.1
-codex plugin add task-cleaner@task-cleaner-local
-```
-
-Keep the extracted directory in a permanent location. Then start a new chat and trust the hooks as described above.
-
-### Install from a source checkout
-
-For development, run these commands from the repository root:
-
-```sh
-codex plugin marketplace add .
-codex plugin add task-cleaner@task-cleaner-local
-```
-
-All three methods use the `task-cleaner-local` marketplace. Choose one method. To change methods, first run `codex plugin marketplace remove task-cleaner-local`, then add the new source.
 
 ## Operation
 
@@ -88,6 +68,32 @@ python3 plugins/task-cleaner/scripts/cleaner.py clean TASK_ID --apply
 - If a hook times out, some files can remain. Inspect the directory and retry. The plugin does not assume that file age means a task is complete.
 - Cleanup runs at `Stop`, before other hooks' continuation decisions are known. Mark files ready only when no later continuation will need them.
 
+## Alternative install methods
+
+### Install from a release ZIP
+
+Download `task-cleaner-v0.1.1.zip` and `SHA256SUMS` from the [v0.1.1 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.1). In the download directory, check and extract the package:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+unzip task-cleaner-v0.1.1.zip
+codex plugin marketplace add ./task-cleaner-v0.1.1
+codex plugin add task-cleaner@task-cleaner-local
+```
+
+Keep the extracted directory in a permanent location. Then start a new chat and trust the hooks as described in [Install](#install).
+
+### Install from a source checkout
+
+For development, run these commands from the repository root:
+
+```sh
+codex plugin marketplace add .
+codex plugin add task-cleaner@task-cleaner-local
+```
+
+All three methods use the `task-cleaner-local` marketplace. Choose one method. To change methods, first run `codex plugin marketplace remove task-cleaner-local`, then add the new source.
+
 ## Tests
 
 ```sh
@@ -105,3 +111,7 @@ This is a fresh implementation. No source code was copied from these projects:
 - [codex-cleaner](https://github.com/jedliuai/codex-cleaner): limited cleanup scope and protection for working files.
 
 The hook contract follows [OpenAI Hooks documentation](https://learn.chatgpt.com/docs/hooks). The package follows [OpenAI plugin documentation](https://developers.openai.com/plugins/build/plugins).
+
+## License
+
+[MIT](LICENSE)
