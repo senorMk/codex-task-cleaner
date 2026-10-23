@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Task Cleaner — local cleanup for Codex</title>
+  <desc id="desc">Remove tracked temporary files after a task is complete. A local Codex plugin for macOS.</desc>
+  <rect width="1280" height="640" fill="#101b26"/>
+  <path d="M880 0H1280V640H1050Z" fill="#152735"/>
+  <path d="M1130 0L950 640" stroke="#244150" stroke-width="2"/>
+  <rect x="72" y="70" width="8" height="34" rx="4" fill="#8fe3bc"/>
+  <g font-family="Helvetica, Arial, sans-serif">
+    <text x="98" y="96" font-size="24" letter-spacing="3" fill="#8fe3bc">LOCAL CODEX PLUGIN</text>
+    <text x="72" y="218" font-size="88" font-weight="700" letter-spacing="-3" fill="#f5f7f9">Task Cleaner</text>
+    <text x="76" y="293" font-size="33" fill="#d0dce4">Remove tracked temporary files</text>
+    <text x="76" y="339" font-size="33" fill="#d0dce4">after a task is complete.</text>
+    <g font-size="20" fill="#d0dce4">
+      <rect x="76" y="396" width="106" height="44" rx="22" fill="#203443"/>
+      <text x="129" y="425" text-anchor="middle">macOS</text>
+      <rect x="194" y="396" width="150" height="44" rx="22" fill="#203443"/>
+      <text x="269" y="425" text-anchor="middle">No API keys</text>
+      <rect x="356" y="396" width="134" height="44" rx="22" fill="#203443"/>
+      <text x="423" y="425" text-anchor="middle">MIT license</text>
+    </g>
+    <path d="M76 510H1204" stroke="#344753"/>
+    <text x="76" y="568" font-size="24" fill="#a6bdcb">github.com/senorMk/codex-task-cleaner</text>
+  </g>
+  <g transform="translate(966 190)">
+    <rect width="238" height="238" rx="34" fill="#101b26" stroke="#344f5f" stroke-width="2"/>
+    <path d="M61 88V77a12 12 0 0 1 12-12h35l18 19h39a12 12 0 0 1 12 12v70a12 12 0 0 1-12 12H73a12 12 0 0 1-12-12Z" fill="#203d4c" stroke="#7895a5" stroke-width="3"/>
+    <circle cx="161" cy="162" r="42" fill="#8fe3bc"/>
+    <path d="m141 162 14 14 26-29" fill="none" stroke="#101b26" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
