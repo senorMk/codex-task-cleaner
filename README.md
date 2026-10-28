@@ -64,6 +64,8 @@ Task Cleaner: Removed 1 task directory and 0 files (0 B).
 
 If cleanup cannot finish, the message gives the reason. Repeated reasons appear once. Command-line output stays in JSON format.
 
+If a task record is missing or invalid, Task Cleaner keeps that task's files and continues to clean other ready tasks. It reports a new or changed record problem once. Run `list` to see each damaged record and its task directory. The list includes damaged records from all sessions. Inspect the directory before you remove any files.
+
 ## Inspect and control cleanup
 
 Use the installed helper path supplied by the hook. In a source checkout:
