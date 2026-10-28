@@ -112,7 +112,12 @@ class Store:
 
     def record(self, task):
         data = read_json(self.location(task) / "record.json")
-        if data.get("version") != 1 or data.get("task") != task:
+        if (not isinstance(data, dict) or data.get("version") != 1
+                or data.get("task") != task
+                or not isinstance(data.get("session"), str)
+                or data.get("status") not in ("active", "ready", "held", "removed")
+                or not isinstance(data.get("device"), int)
+                or not isinstance(data.get("inode"), int)):
             raise Refused("The task record is invalid.")
         return data
 
@@ -156,7 +161,35 @@ class Store:
     def records(self):
         for path in sorted(self.root.iterdir()):
             if re.fullmatch(r"[a-f0-9]{64}", path.name):
-                yield self.record(path.name)
+                try:
+                    yield self.record(path.name)
+                except (Refused, OSError, ValueError, TypeError) as error:
+                    try:
+                        info = (path / "record.json").lstat()
+                        revision = [info.st_mode, info.st_size, info.st_mtime_ns, info.st_ino]
+                    except OSError:
+                        revision = None
+                    reason = ("Record is missing." if isinstance(error, FileNotFoundError)
+                              else "Record cannot be read." if isinstance(error, OSError)
+                              else "Record is invalid.")
+                    yield {"task": path.name, "status": "damaged", "path": str(path),
+                           "reason": reason, "revision": revision}
+
+    def new_record_problems(self, problems):
+        state = self.root / ".reported-record-problems.json"
+        current = {item["task"]: [item["reason"], item["revision"]] for item in problems}
+        try:
+            previous = read_json(state)
+            if not isinstance(previous, dict):
+                previous = {}
+        except (OSError, ValueError, TypeError, Refused):
+            previous = {}
+        new = any(previous.get(task) != revision for task, revision in current.items())
+        try:
+            write_json(state, current)
+        except OSError:
+            return bool(current)
+        return new
 
     def clean(self, task, apply=False):
         data = self.record(task)
@@ -223,19 +256,24 @@ def hook(store, payload):
         return {"hookSpecificOutput": {"hookEventName": event, "additionalContext": context}}
     if event == "Stop":
         session = digest(payload.get("session_id"))
-        reports, skipped = [], []
+        reports, skipped, problems = [], [], []
         deadline = time.monotonic() + 20
         for data in store.records():
+            if data["status"] == "damaged":
+                problems.append(data)
+                continue
             if data["session"] != session or data["status"] != "ready":
                 continue
             if time.monotonic() > deadline:
                 skipped.append("More ready directories remain. Use the cleanup command later.")
-                break
+                continue
             try:
                 reports.append(store.clean(data["task"], apply=True))
             except (Refused, OSError) as error:
                 skipped.append(str(error))
         messages = []
+        if store.new_record_problems(problems):
+            messages.append("Could not read one or more task records. Kept their files. Use the list command to inspect them.")
         if reports:
             directories = len(reports)
             files = sum(report["files"] for report in reports)

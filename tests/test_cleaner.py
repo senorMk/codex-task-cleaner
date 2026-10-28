@@ -56,6 +56,41 @@ class CleanerTests(unittest.TestCase):
             self.store.clean(self.task, True)
 
     @patch.object(cleaner, "open_files")
+    def test_damaged_records_do_not_block_cleanup_and_warning_changes(self, check):
+        damaged = self.store.start("session-b", "damaged")
+        record = self.store.location(damaged["task"]) / "record.json"
+        original = record.read_text()
+        record.unlink()
+        self.store.status(self.task, "ready")
+        payload = {"hook_event_name": "Stop", "session_id": "session-a"}
+
+        result = cleaner.hook(self.store, payload)
+        self.assertIn("Could not read", result["systemMessage"])
+        self.assertIn("Removed 1 task directory", result["systemMessage"])
+        self.assertFalse(self.work.exists())
+        self.assertTrue((self.store.location(damaged["task"]) / "work").exists())
+        issue = next(item for item in self.store.records() if item["task"] == damaged["task"])
+        self.assertEqual(issue["status"], "damaged")
+        self.assertEqual(issue["reason"], "Record is missing.")
+        self.assertIn("path", issue)
+        self.assertNotIn("systemMessage", cleaner.hook(self.store, payload))
+
+        record.write_text("{")
+        self.assertIn("Could not read", cleaner.hook(self.store, payload)["systemMessage"])
+        record.write_text(original)
+        cleaner.hook(self.store, payload)
+        record.unlink()
+        self.assertIn("Could not read", cleaner.hook(self.store, payload)["systemMessage"])
+
+    def test_invalid_record_shapes_are_listed(self):
+        record = self.store.location(self.task) / "record.json"
+        for value in ([], {}, {"version": 1, "task": self.task}):
+            record.write_text(json.dumps(value))
+            issue = list(self.store.records())[0]
+            self.assertEqual(issue["status"], "damaged")
+            self.assertEqual(issue["reason"], "Record is invalid.")
+
+    @patch.object(cleaner, "open_files")
     def test_internal_symlink_does_not_remove_target(self, check):
         target = self.base / "deliverable.txt"
         target.write_text("keep")
