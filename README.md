@@ -9,7 +9,7 @@ Codex puts disposable files in a task directory and marks it ready after the wor
 Run these commands from any directory. Codex downloads the released plugin for you.
 
 ```sh
-codex plugin marketplace add senorMk/codex-task-cleaner --ref v0.1.1
+codex plugin marketplace add senorMk/codex-task-cleaner --ref v0.1.2
 codex plugin add task-cleaner@task-cleaner-local
 ```
 
@@ -74,12 +74,12 @@ python3 plugins/task-cleaner/scripts/cleaner.py clean TASK_ID --apply
 
 ### Install from a release ZIP
 
-Download `task-cleaner-v0.1.1.zip` and `SHA256SUMS` from the [v0.1.1 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.1). In the download directory, check and extract the package:
+Download `task-cleaner-v0.1.2.zip` and `SHA256SUMS` from the [v0.1.2 release](https://github.com/senorMk/codex-task-cleaner/releases/tag/v0.1.2). In the download directory, check and extract the package:
 
 ```sh
 shasum -a 256 -c SHA256SUMS
-unzip task-cleaner-v0.1.1.zip
-codex plugin marketplace add ./task-cleaner-v0.1.1
+unzip task-cleaner-v0.1.2.zip
+codex plugin marketplace add ./task-cleaner-v0.1.2
 codex plugin add task-cleaner@task-cleaner-local
 ```
 
